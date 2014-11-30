@@ -155,7 +155,8 @@ int main(int argc, char *argv[])
 		FATAL("bind(listener, 255.255.255.255): %m\n");
 
 	if (setsockopt(listener, SOL_SOCKET, SO_BINDTODEVICE,
-		       argv[1 + foreground], strlen(argv[1]) + 1) < 0) {
+		       argv[1 + foreground],
+		       strlen(argv[1 + foreground]) + 1) < 0) {
 		FATAL("setsockopt(listener, SO_BINDTODEVICE, %s): %m\n",
 		      argv[1 + foreground]);
 	}
