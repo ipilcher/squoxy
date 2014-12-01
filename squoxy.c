@@ -29,7 +29,9 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-#define PIDFILE		"/var/run/squoxy.pid"
+#define PIDFILE			"/var/run/squoxy.pid"
+#define SQUEEZEBOX_PORT		3483
+#define UE_PORT			3546
 
 static int foreground = 0;
 
@@ -66,7 +68,6 @@ int main(int argc, char *argv[])
 {
 	struct sockaddr_in bcast_addr = {
 		.sin_family	= AF_INET,
-		.sin_port	= htons(3483),
 		.sin_addr	= { .s_addr = INADDR_BROADCAST },
 	};
 
@@ -93,11 +94,12 @@ int main(int argc, char *argv[])
 		.sin_addr	= { .s_addr = INADDR_BROADCAST },
 	};
 
-	socklen_t saddr_size;
 	struct ifreq ifr = { .ifr_name = { 0 } };
+	int listener, sender, ret, one = 1;
 	struct in_pktinfo *pi;
+	socklen_t saddr_size;
 	struct cmsghdr *cmh;
-	int listener, sender, one = 1;
+	uint16_t dest_port;
 	ssize_t n;
 	FILE *fp;
 
@@ -154,9 +156,10 @@ int main(int argc, char *argv[])
 	if (bind(listener, (struct sockaddr *)&saddr, sizeof saddr) < 0)
 		FATAL("bind(listener, 255.255.255.255): %m\n");
 
-	if (setsockopt(listener, SOL_SOCKET, SO_BINDTODEVICE,
-		       argv[1 + foreground],
-		       strlen(argv[1 + foreground]) + 1) < 0) {
+	ret = setsockopt(listener, SOL_SOCKET, SO_BINDTODEVICE,
+			 argv[1 + foreground],
+			 strlen(argv[1 + foreground]) + 1);
+	if (ret < 0) {
 		FATAL("setsockopt(listener, SO_BINDTODEVICE, %s): %m\n",
 		      argv[1 + foreground]);
 	}
@@ -209,15 +212,15 @@ int main(int argc, char *argv[])
 			FATAL("recvfrom(listener): %m\n");
 
 		if ((buf[0] & 0xf) != 5) {
-			DEBUG("Ignoring packet from %s because IHL = %hhd\n",
+			DEBUG("Ignoring packet from %s: IHL = %hhd\n",
 			      inet_ntoa(saddr.sin_addr), buf[0] & 0xf);
 			continue;
 		}
 
-		if (ntohs(*(uint16_t *)(buf + 22)) != 3483) {
-			DEBUG("Ignoring packet from %s because dest port = "
-			       "%hu\n", inet_ntoa(saddr.sin_addr),
-			       ntohs(*(uint16_t *)(buf + 22)));
+		dest_port = ntohs(*(uint16_t *)(buf + 22));
+		if (dest_port != SQUEEZEBOX_PORT && dest_port != UE_PORT) {
+			DEBUG("Ignoring packet from %s: dest port = %hu\n",
+			      inet_ntoa(saddr.sin_addr), dest_port);
 			continue;
 		}
 
