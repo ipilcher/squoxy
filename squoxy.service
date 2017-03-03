@@ -1,0 +1,16 @@
+[Unit]
+Description=Squeezebox discovery forwarder
+After=network-online.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/squoxy bond0.253 bond0.248
+# Running as non-root requires 'setcap cap_net_raw+ep /usr/local/bin/squoxy'
+User=nobody
+Group=nobody
+RuntimeDirectory=squoxy
+#ExecStartPre=/usr/sbin/restorecon /var/run/squoxy
+PIDFile=/var/run/squoxy/squoxy.pid
+
+[Install]
+WantedBy=multi-user.target
