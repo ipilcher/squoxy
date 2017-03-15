@@ -482,7 +482,7 @@ static uint16_t udp_cksum(const struct udp_hdr *const udp)
 		sum += ntohs(words[i]);
 
 	/* Next word is "zeroes" and protocol (0x0011 in network byte order) */
-	sum += 0x011;
+	sum += 0x0011;
 
 	/* Next word is "UDP length" (same as length in UDP header) */
 	udp_length = ntohs(udp->length);
