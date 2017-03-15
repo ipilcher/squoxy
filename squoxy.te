@@ -1,27 +1,22 @@
-policy_module(squoxy, 0.0.1)
+policy_module(squoxy, 0.0.2)
 
 require {
+	type ssdp_port_t;
 	type kernel_t;
 	type devlog_t;
-	type initrc_t;
 	type node_t;
 };
 
 type squoxy_t;
 type squoxy_exec_t;
-type squoxy_var_run_t;
 
 init_daemon_domain(squoxy_t, squoxy_exec_t)
-files_type(squoxy_var_run_t)
-
-# PID file
-allow squoxy_t squoxy_var_run_t:dir { search write add_name };
-allow squoxy_t squoxy_var_run_t:file { create write open };
 
 # Sockets
 allow squoxy_t self:rawip_socket { create bind setopt ioctl read write };
 allow squoxy_t node_t:rawip_socket { node_bind };
 allow squoxy_t self:capability { net_raw };
+allow squoxy_t ssdp_port_t:rawip_socket { name_bind };
 
 # syslog
 allow squoxy_t self:unix_dgram_socket { create connect write };
