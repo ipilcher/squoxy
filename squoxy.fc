@@ -1,0 +1,1 @@
+/usr/(local/)?bin/squoxy	--	gen_context(system_u:object_r:squoxy_exec_t, s0)
