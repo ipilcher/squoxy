@@ -1,11 +1,11 @@
-#squoxy
+# squoxy
 
 <p align="center">
 Copyright 2017 Ian Pilcher
 <arequipeno@gmail.com>
 </p>
 
-##What Is This?
+## What Is This?
 
 Network media players, such as Squeezebox and UE Radio, were created with the assumption that they would operate in residential environments with simple, flat networks.  These media players discover local media servers by sending broadcast packets to a particular UDP port; the servers listen for these discovery packets and send unicast responses.
 
@@ -15,7 +15,7 @@ By definition, routers do not forward broadcast traffic, so a Squeezebox or UE R
 
 The good news is that both the players and media servers works perfectly well across a router, as long as the discovery packet makes it to the server somehow.  **squoxy** is a simple program that listens for media player "discovery" packets on one network and forwards those packets to a different network.
 
-##Building squoxy
+## Building squoxy
 
 After cloning this repo ...
 ~~~
@@ -32,7 +32,8 @@ Compiling targeted squoxy module
 Creating targeted squoxy.pp policy package
 rm tmp/squoxy.mod tmp/squoxy.mod.fc
 ~~~
-##Installing and running
+
+## Installing and running
 
 These instructions are written for CentOS 7.  Other recent, systemd-based, distributions should be similar.
 
@@ -76,9 +77,10 @@ Mar 15 18:06:10 asterisk.penurio.us systemd[1]: Started Squeezebox/UE/SSDP disco
 Mar 15 18:06:10 asterisk.penurio.us systemd[1]: Starting Squeezebox/UE/SSDP discovery forwarder...
 Mar 15 18:06:10 asterisk.penurio.us squoxy[1245]: NOTICE: squoxy.c:678: Forwarding from bond0.253 to bond0.248
 ~~~
-##Notes
 
-####Command-line options
+## Notes
+
+#### Command-line options
 
 **squoxy**'s command-line parsing is quite primitive.  In particular, it generally assumes that the last two arguments are the names of the listen and send network interfaces.  This means that a command like `squoxy -f -h` will silently fail (because `-f` and `-h` are assumed to be network interface names, and error messages are sent to system log by default).
 
@@ -92,7 +94,7 @@ As a special case, `squoxy -h` will display the help message.
 | `-i` | Set the logging verbosity to **INFO** (conflicts with `-d`). |
 | `-L` | Forward packets that do not include a UDP checksum.  (Normally such packets are ignored.) |
 
-####Logging verbosity
+#### Logging verbosity
 
 **squoxy**'s default verbosity is **NOTICE**, which is very quiet.  (In fact the only **NOTICE**-level message is currently the startup message.)  Any packets that are dropped because they are malformed will be logged at the **WARNING** level (since they may indicate malicious activity).
 
@@ -100,11 +102,11 @@ Packets that are ignored (dropped) for other reasons — broadcast packets to an
 
 All packets that are forwarded are logged at the **DEBUG** level.
 
-####IPv6
+#### IPv6
 
 **squoxy** only supports IPv4.  Until IPv6-only home networks are popular, it seems unlikely that media players and servers will support IPv6 at all, let alone supporting **only** IPv6.
 
-####iptables
+#### iptables
 
 The raw sockets used by **squoxy** to listen for discovery packets are affected by **iptables** rules.  (Since the broadcast listener socket listens for broadcast traffic on **all** UDP ports, this is a good thing.)
 
