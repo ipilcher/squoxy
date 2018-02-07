@@ -697,3 +697,5 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+
+/* kate: replace-tabs off; tab-width 8; */
