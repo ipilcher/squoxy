@@ -5,9 +5,9 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/squoxy -i bond0.253 bond0.248
-# Running as non-root requires 'setcap cap_net_raw+ep /usr/local/bin/squoxy'
 User=nobody
 Group=nobody
+AmbientCapabilities=CAP_NET_RAW
 
 [Install]
 WantedBy=multi-user.target

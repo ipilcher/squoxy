@@ -49,10 +49,6 @@ Install the binary ...
 $ sudo cp squoxy /usr/local/bin/
 $ sudo restorecon /usr/local/bin/squoxy
 ~~~
-Add the `CAP_NET_RAW` capability, so **squoxy** can create raw sockets as a non-root user ...
-~~~
-$ sudo setcap cap_net_raw+ep /usr/local/bin/squoxy
-~~~
 Edit the systemd unit file (`squoxy.service`).  Replace `bond0.253 bond0.248` with the interfaces on which **squoxy** should listen and send.  If desired, the logging verbosity can be changed from **INFO** (`-i`) to **DEBUG** (`-d`) or **NOTIFY** (default).
 
 Install the systemd unit file ...
