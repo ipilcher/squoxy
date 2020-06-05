@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, 2017, 2018 Ian Pilcher <arequipeno@gmail.com>
+ * Copyright 2014, 2017, 2018, 2020 Ian Pilcher <arequipeno@gmail.com>
  *
  * This program is free software.  You can redistribute it or modify it under
  * the terms of version 2 of the GNU General Public License (GPL), as published
@@ -33,6 +33,7 @@
 
 /* Magic numbers */
 #define	SSDP_INADDR		0xeffffffa	/* 239.255.255.250 */
+#define NETBIOS_NS_PORT		 137
 #define SSDP_PORT		1900
 #define SQUEEZEBOX_PORT		3483
 #define UE_RADIO_PORT		3546
@@ -630,7 +631,8 @@ static void process_packet(int listener, int sender, const char *const ltype)
 	if (pktbuf.hdr.dest_addr.s_addr == INADDR_BROADCAST) {
 
 		if (udp->dest_port != HTONS(SQUEEZEBOX_PORT)
-				&& udp->dest_port != HTONS(UE_RADIO_PORT)) {
+				&& udp->dest_port != HTONS(UE_RADIO_PORT)
+				&& udp->dest_port != HTONS(NETBIOS_NS_PORT)) {
 			INFO("Ignoring packet %s\n", udp_from_to(udp));
 			return;
 		}
